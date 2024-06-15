@@ -6,7 +6,7 @@ import { SimpleTranslationEntries } from "#app/plugins/i18n";
  * account interactions, descriptive text, etc.
  */
 export const menu: SimpleTranslationEntries = {
-  "cancel": "Annulla",
+  "cancel": "Annull",
   "continue": "Continua",
   "newGame": "Nuova partita",
   "loadGame": "Carica partita",
