@@ -935,7 +935,7 @@
   },
   "stat_trainer_buck": {
     "encounter": {
-      "1": "...I'm telling you right now. I'm seriously tough. Act surprised!",
+      "1": "...I'm telling you right now. I'm seriously tough. Act surprised!--ME START",
       "2": "I can feel my Pokémon shivering inside their Pokéballs!"
     },
     "victory": {
@@ -1040,7 +1040,7 @@
       "1": "I trained together with my whole family,\nevery one of us!$I'm not losing to anyone!"
     },
     "victory": {
-      "1": "I was better than everyone in my family.\nI've never lost before..."
+      "1": "I was better than everyone in my family.\nI've never lost before...----M.E END" 
     }
   },
   "brock": {

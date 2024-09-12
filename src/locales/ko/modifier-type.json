@@ -69,7 +69,7 @@
       "description": "지니게 하면 {{stat}} 종족값을 10% 올려준다. 개체값이 높을수록 더 많이 누적시킬 수 있다."
     },
     "PokemonBaseStatTotalModifierType": {
-      "name": "Shuckle Juice",
+      "name": "Shuckle Juice/FOR-ME",
       "description": "{{increaseDecrease}} all of the holder's base stats by {{statValue}}. You were {{blessCurse}} by the Shuckle.",
       "extra": {
         "increase": "Increases",
@@ -417,7 +417,7 @@
       "description": "야생 포켓몬이 합체되어 등장할 확률이 1% 추가된다."
     },
 
-    "MYSTERY_ENCOUNTER_SHUCKLE_JUICE": { "name": "Shuckle Juice" },
+    "MYSTERY_ENCOUNTER_SHUCKLE_JUICE": { "name": "Shuckle Juice/FOR-ME" },
     "MYSTERY_ENCOUNTER_BLACK_SLUDGE": { "name": "Black Sludge", "description": "The stench is so powerful that shops will only sell you items at a steep cost increase." },
     "MYSTERY_ENCOUNTER_MACHO_BRACE": { "name": "Macho Brace", "description": "Defeating a Pokémon grants the holder a Macho Brace stack. Each stack slightly boosts stats, with an extra bonus at max stacks." },
     "MYSTERY_ENCOUNTER_OLD_GATEAU": { "name": "Old Gateau", "description": "Increases the holder's {{stats}} stats by {{statValue}}." },
