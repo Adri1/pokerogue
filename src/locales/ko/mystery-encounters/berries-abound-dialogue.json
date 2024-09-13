@@ -1,26 +1,26 @@
 {
-  "intro": "There's a huge berry bush\nnear that Pokémon!",
-  "title": "Berries Abound",
-  "description": "It looks like there's a strong Pokémon guarding a berry bush. Battling is the straightforward approach, but it looks strong. Perhaps a fast Pokémon could grab some berries without getting caught?",
-  "query": "What will you do?",
-  "berries": "Berries!",
+  "intro": "포켓몬 근처에\n열매가 달린 거대한 나무가 있네요!",
+  "title": "나무열매 풍년",
+  "description": "나무열매 덤불을 지키고 있는 강력한 포켓몬이 있는 것 같습니다. 포켓몬 배틀이 간단해보이지만, 조금 강해보이네요. 혹시 빠른 포켓몬이라면 잡히지 않고 열매를 가져올 수 있지 않을까요?",
+  "query": "어떻게 할까?",
+  "berries": "나무열매!",
   "option": {
     "1": {
-      "label": "Battle the Pokémon",
-      "tooltip": "(-) Hard Battle\n(+) Gain Berries",
-      "selected": "You approach the\nPokémon without fear."
+      "label": "포켓몬과 싸운다",
+      "tooltip": "(-) 어려운 배틀\n(+) 나무열매 획득.",
+      "selected": "당신은 겁도 없이\n포켓몬 앞으로 나아갔다."
     },
     "2": {
-      "label": "Race to the Bush",
-      "tooltip": "(-) {{fastestPokemon}} Uses its Speed\n(+) Gain Berries",
-      "selected": "Your {{fastestPokemon}} races for the berry bush!$It manages to nab {{numBerries}} before the {{enemyPokemon}} can react!$You quickly retreat with your newfound prize.",
-      "selected_bad": "Your {{fastestPokemon}} races for the berry bush!$Oh no! The {{enemyPokemon}} was faster and blocked off the approach!",
-      "boss_enraged": "The opposing {{enemyPokemon}} has become enraged!"
+      "label": "덤불을 향한 질주",
+      "tooltip": "(-) {{fastestPokemon}}의 스피드를 활용.\n(+) 나무열매 획득.",
+      "selected": "{{fastestPokemon}}[[가]] 나무열매 덤불을 향해 달려간다!${{enemyPokemon}}[[가]] 반응하기 전에, {{numBerries}}을 획득한다!$당신은 찾은 상품을 들고 재빨리 도망간다.",
+      "selected_bad": "{{fastestPokemon}}[[가]] 나무열매 덤불을 행해 달려간다!$이런! {{enemyPokemon}}[[가]] 더 빨라서, 가로막혔다!",
+      "boss_enraged": "상대 {{enemyPokemon}}[[는]] 분노했다!"
     },
     "3": {
-      "label": "Leave",
-      "tooltip": "(-) No Rewards",
-      "selected": "You leave the strong Pokémon\nwith its prize and continue on."
+      "label": "떠난다",
+      "tooltip": "(-) 보상 없음.",
+      "selected": "강한 포켓몬과 상품을 남겨두고\n당신은 계속 나아간다."
     }
   }
 }
