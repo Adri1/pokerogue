@@ -1,33 +1,33 @@
 {
-  "intro": "You've come across some\ntraining tools and supplies.",
-  "title": "Training Session",
-  "description": "These supplies look like they could be used to train a member of your party! There are a few ways you could train your Pokémon, by battling against it with the rest of your team.",
-  "query": "How should you train?",
-  "invalid_selection": "Pokémon must be healthy enough.",
+  "intro": "훈련도구와 훈련용품을\n발견했다.",
+  "title": "트레이닝 시간",
+  "description": "발견한 도구를 사용해서 멤버들을 훈련시킬 수 있을 것 같습니다! There are a few ways you could train your Pokémon, by battling against it with the rest of your team.",
+  "query": "어떻게 훔련할까요?",
+  "invalid_selection": "포켓몬이 건강하지 않다.",
   "option": {
     "1": {
-      "label": "Light Training",
-      "tooltip": "(-) Light Battle\n(+) Improve 2 Random IVs of Pokémon",
-      "finished": "{{selectedPokemon}} returns, feeling\nworn out but accomplished!$Its {{stat1}} and {{stat2}} IVs were improved!"
+      "label": "가벼운 트레이닝",
+      "tooltip": "(-) 쉬운 배틀 \n(+) 포켓몬의 능력치 2개 향상",
+      "finished": "{{selectedPokemon}}[[과]] 함께한 훈련이 끝나니,\n조금 지쳤지만 뿌듯하다!${{selectedPokemon}}의 {{stat1}}[[과]] {{stat2}}[[가]] 상승했다!"
     },
     "2": {
-      "label": "Moderate Training",
-      "tooltip": "(-) Moderate Battle\n(+) Change Pokémon's Nature",
-      "select_prompt": "Select a new nature\nto train your Pokémon in.",
-      "finished": "{{selectedPokemon}} returns, feeling\nworn out but accomplished!$Its nature was changed to {{nature}}!"
+      "label": "일반적인 트레이닝",
+      "tooltip": "(-) 평범한 배틀\n(+) 포켓몬의 성격 변경",
+      "select_prompt": "포켓몬과 훈련할\n새로운 성격을 선택하세요.",
+      "finished": "{{selectedPokemon}}[[과]] 함께한 훈련이 끝나니,\n조금 지쳤지만 뿌듯하다!${{selectedPokemon}}의 성격이 {{nature}}[[로]] 바뀌었다!"
     },
     "3": {
-      "label": "Heavy Training",
-      "tooltip": "(-) Harsh Battle\n(+) Change Pokémon's Ability",
-      "select_prompt": "Select a new ability\nto train your Pokémon in.",
-      "finished": "{{selectedPokemon}} returns, feeling\nworn out but accomplished!$Its ability was changed to {{ability}}!"
+      "label": "고강도 트레이닝",
+      "tooltip": "(-) 힘든 배틀\n(+) 포켓몬의 특성 변경",
+      "select_prompt": "포켓몬과 훈련할\n새로운 특성을 선택을 선택하세요.",
+      "finished": "{{selectedPokemon}}[[과]] 함께한 훈련이 끝나니,\n조금 지쳤지만 뿌듯하다!${{selectedPokemon}}의 특성이 {{ability}}[[로]] 바뀌었다!"
     },
     "4": {
-      "label": "Leave",
-      "tooltip": "(-) No Rewards",
-      "selected": "You've no time for training.\nTime to move on."
+      "label": "떠난다",
+      "tooltip": "(-) 보상 없음",
+      "selected": "훈련할 시간은 없다.\n다음 단계로 넘어가야한다."
     },
-    "selected": "{{selectedPokemon}} moves across\nthe clearing to face you..."
+    "selected": "{{selectedPokemon}}[[가]] 공터를 가로질러\n당신을 바라본다…"
   },
-  "outro": "That was a successful training session!"
+  "outro": "성공적인 트레이닝 시간이었다!"
 }
