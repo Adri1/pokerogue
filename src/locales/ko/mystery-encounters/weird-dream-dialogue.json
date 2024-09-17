@@ -1,22 +1,22 @@
 {
-  "intro": "A shadowy woman blocks your path.\nSomething about her is unsettling...",
-  "speaker": "Woman",
-  "intro_dialogue": "I have seen your futures, your pasts...$Child, do you see them too?",
+  "intro": "어둑어둑한 여자이 그림자같이 앞을 막아섰다.\n무언가 불안한 기분이 든다…….",
+  "speaker": "여자",
+  "intro_dialogue": "너의 미래와 과거를 봤어….$있잖아, 역시 너도 그게 보이는 거지?",
   "title": "???",
-  "description": "The woman's words echo in your head. It wasn't just a singular voice, but a vast multitude, from all timelines and realities. You begin to feel dizzy, the question lingering on your mind...\n\n@[TOOLTIP_TITLE]{\"I have seen your futures, your pasts... Child, do you see them too?\"}",
-  "query": "What will you do?",
+  "description": "여자의 말이 머리속에서 메아리처럼 울려 퍼집니다. 한 사람의 목소리가 아니네요. 모든 시간대와 현실에서 온 수많은 사람들의 목소리입니다. 어지러움을 느끼기 시작하고, 그 질문이 머릿속을 맴돌기 시작합니다…\n\n@[TOOLTIP_TITLE]{\"너의 미래와 과거를 봤어….있잖아, 역시 너도 그게 보이는 거지?\"}",
+  "query": "어떻게 하시겠습니까?",
   "option": {
     "1": {
-      "label": "\"I See Them\"",
-      "tooltip": "@[SUMMARY_GREEN]{(?) Affects your Pokémon}",
-      "selected": "Her hand reaches out to touch you,\nand everything goes black.$Then...@d{64} You see everything.\nEvery timeline, all your different selves,\n past and future.$Everything that has made you,\neverything you will become...@d{64}",
-      "cutscene": "You see your Pokémon,@d{32} converging from\nevery reality to become something new...@d{64}",
-      "dream_complete": "When you awaken, the woman - was it a woman or a ghost? - is gone...$.@d{32}.@d{32}.@d{32}$Your Pokémon team has changed...\nOr is it the same team you've always had?"
+      "label": "\"바라본다\"",
+      "tooltip": "@[SUMMARY_GREEN]{(?) 멤버 포켓몬에 영향}",
+      "selected": "그녀가 당신을 만지려고 손을 뻗자,\n모든 것이 검게 변한다.$곧…@d{64} 당신은 모든 것을 바라본다.\n모든 시간대, 모든 다른 자아,\n 과거와 미래.$당신이 만들어온 모든 것,\n당신이 될 모든 것…@d{64}",
+      "cutscene": "포켓몬을 바라보자,@d{32} 모든 현실에서\n수렴하여 새로운 무언가가 되고있다…@d{64}",
+      "dream_complete": "잠에서 깨어나자, 여자는 사라진 것 같다. 사람이 아니라 유령이었을지도…?$.@d{32}.@d{32}.@d{32}$포켓몬 팀에도 변화가 있는지…\n그게 아니라면 항상 함께했던 멤버 동일한지 확인해볼까?"
     },
     "2": {
-      "label": "Quickly Leave",
-      "tooltip": "(-) Affects your Pokémon",
-      "selected": "You tear your mind from a numbing grip, and hastily depart.$When you finally stop to collect yourself, you check the Pokémon in your team.$For some reason, all of their levels have decreased!"
+      "label": "빠르게 떠난다",
+      "tooltip": "(-) 멤버 포켓몬에 영향",
+      "selected": "무감각하게 만들던 손아귀에서 벗어나 정신을 차리고, 빠르게 떠났다.$스스로를 추스르기 위해 멈춰섰다가, 멤버 포켓몬을 확인했다.$이유는 알 수 없지만, 모든 포켓몬의 레벨이 조금 감소했다!"
     }
   }
 }
