@@ -929,6 +929,10 @@ export function setSetting(setting: string, value: integer): boolean {
               //   handler: () => changeLocaleHandler("ca-ES")
               // },
               {
+                label: "Slovenščina",
+                handler: () => changeLocaleHandler("sl")
+              },
+              {
                 label: i18next.t("settings:back"),
                 handler: () => cancelHandler()
               }
