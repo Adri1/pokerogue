@@ -162,8 +162,10 @@ const languageSettings: { [key: string]: LanguageSetting } = {
     starterInfoXPos: 29,
   },
   ru: {
-    starterInfoTextSize: "56px",
+    starterInfoTextSize: "46px",
     instructionTextSize: "38px",
+    starterInfoYOffset: 0.5,
+    starterInfoXPos: 26,
   },
 };
 
