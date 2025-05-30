@@ -14,6 +14,7 @@ export default class MockContainer implements MockGameObject {
   protected textureManager;
   public list: MockGameObject[] = [];
   public name: string;
+  public active = true;
 
   constructor(textureManager: MockTextureManager, x: number, y: number) {
     this.x = x;
@@ -214,9 +215,12 @@ export default class MockContainer implements MockGameObject {
     return this;
   }
 
-  add(...obj: MockGameObject[]): this {
-    // Adds a child to this Game Object.
-    this.list.push(...obj);
+  add(obj: MockGameObject | MockGameObject[]): this {
+    if (Array.isArray(obj)) {
+      this.list.push(...obj);
+    } else {
+      this.list.push(obj);
+    }
     return this;
   }
 
@@ -272,9 +276,24 @@ export default class MockContainer implements MockGameObject {
     return this;
   }
 
-  each(method): this {
+  // biome-ignore lint/complexity/noBannedTypes: This matches the signature of the method it mocks
+  each(callback: Function, context?: object, ...args: any[]): this {
+    if (context !== undefined) {
+      callback = callback.bind(context);
+    }
+    for (const item of this.list.slice()) {
+      callback(item, ...args);
+    }
+    return this;
+  }
+
+  // biome-ignore lint/complexity/noBannedTypes: This matches the signature of the method it mocks
+  iterate(callback: Function, context?: object, ...args: any[]): this {
+    if (context !== undefined) {
+      callback = callback.bind(context);
+    }
     for (const item of this.list) {
-      method(item);
+      callback(item, ...args);
     }
     return this;
   }
@@ -286,6 +305,11 @@ export default class MockContainer implements MockGameObject {
     if (source.y !== undefined) {
       this.y = source.y;
     }
+    return this;
+  }
+
+  setActive(active: boolean): this {
+    this.active = active;
     return this;
   }
 }
