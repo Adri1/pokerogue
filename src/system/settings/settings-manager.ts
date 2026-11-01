@@ -53,6 +53,11 @@ export class SettingsManager {
     return this._settings.gamepad;
   }
 
+  /** Getter for keyboard settings */
+  public get keyboard() {
+    return this._settings.keyboard;
+  }
+
   /** Getter for checking if experimental sprites are enabled */
   public get expSpritesEnabled(): boolean {
     return this.display.spriteSet === SpriteSet.EXPERIMENTAL;
@@ -125,7 +130,7 @@ export class SettingsManager {
 
         applySettingsVersionMigration(lsSettings);
 
-        const { general, audio, display, gamepad } = lsSettings;
+        const { general, audio, display, gamepad, keyboard } = lsSettings;
 
         if (general) {
           this._settings.general = { ...this._settings.general, ...general };
@@ -144,6 +149,10 @@ export class SettingsManager {
 
         if (gamepad) {
           this._settings.gamepad = { ...this._settings.gamepad, ...gamepad };
+        }
+
+        if (keyboard) {
+          this._settings.keyboard = { ...this._settings.keyboard, ...keyboard };
         }
       } catch (err) {
         console.error("Error loading settings from local storage:", err);

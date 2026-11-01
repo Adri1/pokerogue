@@ -4,8 +4,14 @@ import { settings } from "#app/global-settings-manager";
 import { TouchControl } from "#app/touch-controls";
 import { Button } from "#enums/buttons";
 import { Device } from "#enums/devices";
+import type { KeyboardLayout } from "#enums/keyboard-layout";
 import { UiMode } from "#enums/ui-mode";
-import { CFG_KEYBOARD_QWERTY } from "#inputs/cfg-keyboard-qwerty";
+import {
+  detectKeyboardLayout,
+  detectKeyboardLayoutFromKey,
+  getKeyboardConfigForLayout,
+  mergeCustomBindings,
+} from "#inputs/cfg-keyboard-layouts";
 import { assign, getButtonWithKeycode, getIconForLatestInput, swap } from "#inputs/config-handler";
 import { PAD_DUALSHOCK } from "#inputs/pad-dualshock";
 import { PAD_GENERIC } from "#inputs/pad-generic";
@@ -350,6 +356,7 @@ export class InputsController {
    */
   keyboardKeyDown(event: KeyboardEvent): void {
     this.lastSource = "keyboard";
+    this.detectLayoutFromKeyEvent(event);
     this.ensureKeyboardIsInit();
     const buttonDown = getButtonWithKeycode(this.getActiveConfig(Device.KEYBOARD)!, event.keyCode);
     if (buttonDown != null) {
@@ -506,12 +513,59 @@ export class InputsController {
    * @param id The identifier string of the keyboard layout.
    * @returns InterfaceConfig The configuration object corresponding to the identified keyboard layout.
    */
-  getConfigKeyboard(id: string): InterfaceConfig {
-    if (id === "default") {
-      return CFG_KEYBOARD_QWERTY;
+  getConfigKeyboard(_id: string): InterfaceConfig {
+    return getKeyboardConfigForLayout(settings.keyboard.layout);
+  }
+
+  /**
+   * Detect the system's keyboard layout once, and switch to the matching preset.
+   * Bindings the user customized are kept.
+   */
+  async autoDetectKeyboardLayout(): Promise<void> {
+    if (settings.keyboard.layoutDetected) {
+      return;
+    }
+    const detected = await detectKeyboardLayout();
+    if (detected != null) {
+      this.applyDetectedKeyboardLayout(detected);
+    }
+  }
+
+  /**
+   * Fallback for browsers without the Keyboard Layout Map API:
+   * infer the layout from a physical key and the character it produced.
+   */
+  private detectLayoutFromKeyEvent(event: KeyboardEvent): void {
+    if (settings.keyboard.layoutDetected) {
+      return;
+    }
+    const detected = detectKeyboardLayoutFromKey(event.code, event.key);
+    if (detected != null) {
+      this.applyDetectedKeyboardLayout(detected);
+    }
+  }
+
+  private applyDetectedKeyboardLayout(detected: KeyboardLayout): void {
+    if (settings.keyboard.layoutDetected) {
+      return;
+    }
+    settings.update("keyboard", "layoutDetected", true);
+
+    const previous = settings.keyboard.layout;
+    if (detected === previous) {
+      return;
     }
 
-    return CFG_KEYBOARD_QWERTY;
+    const deviceName = this.selectedDevice[Device.KEYBOARD];
+    const savedCustom = this.configs[deviceName]?.custom;
+    settings.update("keyboard", "layout", detected);
+
+    const config = deepCopy(this.getConfigKeyboard(deviceName)) as InterfaceConfig;
+    config.custom = savedCustom ? mergeCustomBindings(previous, detected, savedCustom) : { ...config.default };
+    this.configs[deviceName] = config;
+    globalScene.gameData?.saveMappingConfigs(deviceName, config);
+    this.deactivatePressedKey();
+    (globalScene.ui?.handlers[UiMode.SETTINGS_KEYBOARD] as SettingsKeyboardUiHandler | undefined)?.updateBindings();
   }
 
   /**

@@ -124,6 +124,7 @@ export class GameData {
       this.secretId = 0;
     } else {
       this.loadMappingConfigs();
+      globalScene.inputController?.autoDetectKeyboardLayout();
       this.trainerId = randInt(65536);
       this.secretId = randInt(65536);
     }

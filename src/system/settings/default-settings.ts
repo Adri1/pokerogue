@@ -8,6 +8,7 @@ import { ExpGainsSpeed } from "#enums/exp-gains-speed";
 import { ExpNotification } from "#enums/exp-notification";
 import { GameSpeed } from "#enums/game-speed";
 import { HpBarSpeed } from "#enums/hp-bar-speed";
+import { KeyboardLayout } from "#enums/keyboard-layout";
 import { MoneyFormat } from "#enums/money-format";
 import { MusicPreference } from "#enums/music-preference";
 import { PlayerGender } from "#enums/player-gender";
@@ -21,6 +22,7 @@ import type {
   DisplaySettings,
   GamepadSettings,
   GeneralSettings,
+  KeyboardSettings,
   UserFacingSettings,
 } from "#types/settings";
 
@@ -84,9 +86,15 @@ const defaultGamepadSettings: GamepadSettings = {
   enabled: true,
 };
 
+const defaultKeyboardSettings: KeyboardSettings = {
+  layout: KeyboardLayout.QWERTY,
+  layoutDetected: false,
+};
+
 export const defaultSettings: UserFacingSettings = {
   audio: defaultAudioSettings,
   display: defaultDisplaySettings,
   gamepad: defaultGamepadSettings,
   general: defaultGeneralSettings,
+  keyboard: defaultKeyboardSettings,
 };

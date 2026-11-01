@@ -1,5 +1,6 @@
 import { globalScene } from "#app/global-scene";
 import { Device } from "#enums/devices";
+import { KeyboardLayout } from "#enums/keyboard-layout";
 import { TextStyle } from "#enums/text-style";
 import { UiMode } from "#enums/ui-mode";
 import { CFG_KEYBOARD_QWERTY } from "#inputs/cfg-keyboard-qwerty";
@@ -29,7 +30,7 @@ export class SettingsKeyboardUiHandler extends BaseControlSettingsUiHandler {
     this.settingDeviceDefaults = settingKeyboardDefaults;
     this.settingDeviceOptions = settingKeyboardOptions;
     this.configs = [CFG_KEYBOARD_QWERTY];
-    this.commonSettingsCount = 0;
+    this.commonSettingsCount = 1;
     this.textureOverride = "keyboard";
     this.settingBlacklisted = settingKeyboardBlackList;
     this.device = Device.KEYBOARD;
@@ -41,6 +42,22 @@ export class SettingsKeyboardUiHandler extends BaseControlSettingsUiHandler {
   }
 
   setSetting = setSettingKeyboard;
+
+  private deleteIcon?: Phaser.GameObjects.Sprite;
+  private deleteLabel?: Phaser.GameObjects.Text;
+
+  /** Whether the cursor is on the "Keyboard Layout" row, which has no binding to delete */
+  private isOnLayoutRow(): boolean {
+    return this.cursor + this.scrollCursor === 0;
+  }
+
+  override setCursor(cursor: number): boolean {
+    const ret = super.setCursor(cursor);
+    const showDelete = !this.isOnLayoutRow();
+    this.deleteIcon?.setVisible(showDelete);
+    this.deleteLabel?.setVisible(showDelete);
+    return ret;
+  }
 
   setup() {
     super.setup();
@@ -64,6 +81,8 @@ export class SettingsKeyboardUiHandler extends BaseControlSettingsUiHandler {
 
     this.settingsContainer.add(iconDelete);
     this.settingsContainer.add(deleteText);
+    this.deleteIcon = iconDelete;
+    this.deleteLabel = deleteText;
 
     // Map the 'noKeyboard' layout options for easy access.
     this.layout["noKeyboard"].optionsContainer = optionsContainer;
@@ -78,6 +97,10 @@ export class SettingsKeyboardUiHandler extends BaseControlSettingsUiHandler {
       return;
     }
     const isKeyboard = globalScene.ui.mode === UiMode.SETTINGS_KEYBOARD;
+    if (isKeyboard && this.isOnLayoutRow()) {
+      this.setOptionCursor(0, KeyboardLayout.QWERTY, true);
+      return;
+    }
     globalScene.gameData.resetMappingToDefault(isKeyboard ? Device.KEYBOARD : Device.GAMEPAD);
     this.tabMenu?.updateIcons();
   }
@@ -86,7 +109,7 @@ export class SettingsKeyboardUiHandler extends BaseControlSettingsUiHandler {
    * Handle the delete key press event.
    */
   onDeleteDown(): void {
-    if (globalScene.ui.mode !== UiMode.SETTINGS_KEYBOARD) {
+    if (globalScene.ui.mode !== UiMode.SETTINGS_KEYBOARD || this.isOnLayoutRow()) {
       return;
     }
     const cursor = this.cursor + this.scrollCursor; // Calculate the absolute cursor position.

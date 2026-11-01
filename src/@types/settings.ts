@@ -8,6 +8,7 @@ import type { ExpGainsSpeed } from "#enums/exp-gains-speed";
 import type { ExpNotification } from "#enums/exp-notification";
 import type { GameSpeed } from "#enums/game-speed";
 import type { HpBarSpeed } from "#enums/hp-bar-speed";
+import type { KeyboardLayout } from "#enums/keyboard-layout";
 import type { MoneyFormat } from "#enums/money-format";
 import type { MusicPreference } from "#enums/music-preference";
 import type { PlayerGender } from "#enums/player-gender";
@@ -30,6 +31,7 @@ export interface UserFacingSettings {
   display: DisplaySettings;
   gamepad: GamepadSettings;
   general: GeneralSettings;
+  keyboard: KeyboardSettings;
 }
 
 export interface GeneralSettings {
@@ -93,6 +95,12 @@ export interface GamepadSettings {
   enabled: boolean;
 }
 
+export interface KeyboardSettings {
+  layout: KeyboardLayout;
+  /** Whether the system's keyboard layout has already been auto-detected */
+  layoutDetected: boolean;
+}
+
 export type SettingUiItemOption = {
   value: number | string | boolean;
   label: string;
@@ -123,7 +131,12 @@ export interface SettingsUiItem<K = AnySettingKey> {
 export type SettingsCategory = keyof UserFacingSettings;
 
 /** All keys for all settings categories */
-export type AnySettingKey = GeneralSettingsKey | DisplaySettingsKey | AudioSettingsKey | GamepadSettingsKey;
+export type AnySettingKey =
+  | GeneralSettingsKey
+  | DisplaySettingsKey
+  | AudioSettingsKey
+  | GamepadSettingsKey
+  | KeyboardSettingsKey;
 
 /** All keys for the general settings + `"moveTouchControls"` */
 export type GeneralSettingsKey = keyof GeneralSettings | "moveTouchControls";
@@ -139,3 +152,6 @@ export type VolumeSettingsKey = Exclude<AudioSettingsKey, "musicPreference" | "e
 
 /** All keys for the gamepad settings */
 export type GamepadSettingsKey = keyof GamepadSettings;
+
+/** All keys for the keyboard settings */
+export type KeyboardSettingsKey = keyof KeyboardSettings;

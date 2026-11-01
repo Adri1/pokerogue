@@ -1,12 +1,15 @@
 import { globalScene } from "#app/global-scene";
+import { settings } from "#app/global-settings-manager";
 import { isDev } from "#constants/app-constants";
 import { Button } from "#enums/buttons";
+import { Device } from "#enums/devices";
+import { KeyboardLayout } from "#enums/keyboard-layout";
 import { UiMode } from "#enums/ui-mode";
 import type { SettingsKeyboardUiHandler } from "#ui/keyboard-settings-ui-handler";
 import i18next from "i18next";
 
 export enum SettingKeyboard {
-  // Default_Layout = "DEFAULT_LAYOUT",
+  KEYBOARD_LAYOUT = "layout",
   BUTTON_UP = "BUTTON_UP",
   ALT_BUTTON_UP = "ALT_BUTTON_UP",
   BUTTON_DOWN = "BUTTON_DOWN",
@@ -47,7 +50,7 @@ export enum SettingKeyboard {
 const pressAction = i18next.t("settings:pressToBind");
 
 export const settingKeyboardOptions = {
-  // [SettingKeyboard.Default_Layout]: ['Default'],
+  [SettingKeyboard.KEYBOARD_LAYOUT]: ["QWERTY", "AZERTY", "QWERTZ"],
   [SettingKeyboard.BUTTON_UP]: [`KEY ${Button.UP.toString()}`, pressAction],
   [SettingKeyboard.BUTTON_DOWN]: [`KEY ${Button.DOWN.toString()}`, pressAction],
   [SettingKeyboard.ALT_BUTTON_UP]: [`KEY ${Button.UP.toString()}`, pressAction],
@@ -86,7 +89,7 @@ export const settingKeyboardOptions = {
 };
 
 export const settingKeyboardDefaults = {
-  // [SettingKeyboard.Default_Layout]: 0,
+  [SettingKeyboard.KEYBOARD_LAYOUT]: KeyboardLayout.QWERTY,
   [SettingKeyboard.BUTTON_UP]: 0,
   [SettingKeyboard.BUTTON_DOWN]: 0,
   [SettingKeyboard.BUTTON_LEFT]: 0,
@@ -138,6 +141,20 @@ export const settingKeyboardBlackList = [
 
 export function setSettingKeyboard(setting: SettingKeyboard, value: number): boolean {
   switch (setting) {
+    case SettingKeyboard.KEYBOARD_LAYOUT:
+      if (settings.keyboard.layout !== value) {
+        settings.update("keyboard", "layout", value);
+        settings.update("keyboard", "layoutDetected", true);
+        // The key held to change the option may map to a different button (or none) in the new layout,
+        // so its release would never be matched and the input would repeat forever.
+        // Deferred, as the controller registers the repeat interval after this input event returns.
+        setTimeout(() => globalScene.inputController.deactivatePressedKey());
+        // Rebuild the bindings from the default binds of the newly selected preset
+        globalScene.gameData.resetMappingToDefault(Device.KEYBOARD);
+        globalScene.inputController.resetConfig(Device.KEYBOARD);
+        globalScene.ui?.getHandler<SettingsKeyboardUiHandler>()?.updateBindings();
+      }
+      break;
     case SettingKeyboard.BUTTON_UP:
     case SettingKeyboard.BUTTON_DOWN:
     case SettingKeyboard.BUTTON_LEFT:

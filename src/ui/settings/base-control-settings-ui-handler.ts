@@ -295,6 +295,8 @@ export abstract class BaseControlSettingsUiHandler extends UiHandler {
     this.keys.forEach((key, index) => {
       if (key === "enabled") {
         this.setOptionCursor(index, Number(!settings.gamepad[key]));
+      } else if (key === "layout") {
+        this.setOptionCursor(index, settings.keyboard.layout);
       }
     });
 
