@@ -87,9 +87,13 @@ export class TitleUiHandler extends OptionSelectUiHandler {
     this.usernameLabel = addTextObject(labelPosX, 0, this.getUsername(), TextStyle.MESSAGE, { fontSize: "54px" }) // formatting
       .setOrigin(1, 0);
 
-    this.playerCountLabel = addTextObject(labelPosX, 0, `? ${i18next.t("menu:playersOnline")}`, TextStyle.MESSAGE, {
-      fontSize: "54px",
-    }) //
+    this.playerCountLabel = addTextObject(
+      labelPosX,
+      0,
+      i18next.t("menu:playersOnline", { playerCount: 0 }),
+      TextStyle.MESSAGE,
+      { fontSize: "54px" },
+    ) //
       .setOrigin(1, 0);
 
     const logoHeight = logo.y + logo.displayHeight;
@@ -131,7 +135,7 @@ export class TitleUiHandler extends OptionSelectUiHandler {
         if (stats == null) {
           return;
         }
-        this.playerCountLabel.setText(`${stats.playerCount} ${i18next.t("menu:playersOnline")}`);
+        this.playerCountLabel.setText(i18next.t("menu:playersOnline", { playerCount: stats.playerCount }));
         const splashMessage = this.splashMessage;
         if (splashMessage === "splashMessages:battlesWon") {
           this.splashMessageText.setText(i18next.t(splashMessage, { count: stats.battleCount }));
