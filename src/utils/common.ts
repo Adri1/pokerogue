@@ -314,6 +314,10 @@ export function formatDateForCurrentLanguage(date: Date | number, options?: Intl
   return new Date(date).toLocaleDateString(dateLocale, dateOptions);
 }
 
+export function toFullWidthAlphanumerics(value: unknown): string {
+  return String(value).replace(/[A-Za-z0-9/()]/g, character => String.fromCharCode(character.charCodeAt(0) + 0xfee0));
+}
+
 export function formatDateTimeForCurrentLanguage(date: Date | number): string {
   const language = i18next.resolvedLanguage ?? i18next.language ?? "en";
   const dateLocale = getDateLocaleForLanguage(language);

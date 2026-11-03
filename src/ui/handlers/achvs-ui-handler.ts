@@ -12,6 +12,7 @@ import { MessageUiHandler } from "#ui/message-ui-handler";
 import { ScrollBar } from "#ui/scroll-bar";
 import { addTextObject } from "#ui/text";
 import { addWindow } from "#ui/ui-theme";
+import { formatDateForCurrentLanguage } from "#utils/common";
 import i18next from "i18next";
 import Phaser from "phaser";
 
@@ -199,7 +200,7 @@ export class AchvsUiHandler extends MessageUiHandler {
     this.showText(hidden ? "" : achv.description);
     this.scoreText.setText(`${achv.score}pt`);
     this.unlockText.setText(
-      unlocked ? new Date(achvUnlocks[achv.id]).toLocaleDateString() : i18next.t("achv:locked.name"),
+      unlocked ? formatDateForCurrentLanguage(achvUnlocks[achv.id]) : i18next.t("achv:locked.name"),
     );
   }
 
@@ -210,7 +211,7 @@ export class AchvsUiHandler extends MessageUiHandler {
     this.titleText.setText(getVoucherTypeName(voucher.voucherType));
     this.showText(voucher.description);
     this.unlockText.setText(
-      unlocked ? new Date(voucherUnlocks[voucher.id]).toLocaleDateString() : i18next.t("voucher:locked"),
+      unlocked ? formatDateForCurrentLanguage(voucherUnlocks[voucher.id]) : i18next.t("voucher:locked"),
     );
   }
 

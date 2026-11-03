@@ -8,7 +8,7 @@ import { ScrollBar } from "#ui/scroll-bar";
 import { ScrollableGridHelper } from "#ui/scrollable-grid-helper";
 import { addTextObject } from "#ui/text";
 import { addWindow } from "#ui/ui-theme";
-import { formatDateForCurrentLanguage } from "#utils/common";
+import { formatDateForCurrentLanguage, toFullWidthAlphanumerics } from "#utils/common";
 import i18next from "i18next";
 
 export class EggListUiHandler extends MessageUiHandler {
@@ -152,15 +152,19 @@ export class EggListUiHandler extends MessageUiHandler {
    */
   private setEggDetails(index: number): void {
     const egg = globalScene.gameData.eggs[index];
+    const language = i18next.resolvedLanguage ?? i18next.language ?? "en";
+    const formattedDate = formatDateForCurrentLanguage(egg.timestamp, {
+      weekday: "short",
+      year: "numeric",
+      month: "2-digit",
+      day: "numeric",
+    });
     this.eggSprite.setFrame(`egg_${egg.getKey()}`);
     this.eggNameText.setText(`${i18next.t("egg:egg")} (${egg.getEggDescriptor()})`);
     this.eggDateText.setText(
-      formatDateForCurrentLanguage(egg.timestamp, {
-        weekday: "short",
-        year: "numeric",
-        month: "2-digit",
-        day: "numeric",
-      }),
+      language.toLowerCase().startsWith("ja") || language.toLowerCase().startsWith("zh")
+        ? toFullWidthAlphanumerics(formattedDate)
+        : formattedDate,
     );
     this.eggHatchWavesText.setText(egg.getEggHatchWavesMessage());
     this.eggGachaInfoText.setText(egg.getEggTypeDescriptor());
