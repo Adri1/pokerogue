@@ -13,7 +13,7 @@ import { MessageUiHandler } from "#ui/message-ui-handler";
 import { RunDisplayMode } from "#ui/run-info-ui-handler";
 import { addTextObject } from "#ui/text";
 import { addWindow } from "#ui/ui-theme";
-import { fixedInt, formatLargeNumber } from "#utils/common";
+import { fixedInt, formatDateTimeForCurrentLanguage, formatLargeNumber } from "#utils/common";
 import i18next from "i18next";
 import Phaser from "phaser";
 
@@ -384,7 +384,7 @@ class RunEntryContainer extends Phaser.GameObjects.Container {
     gameModeLabel.appendText(i18next.t("saveSlotSelectUiHandler:wave") + " " + data.waveIndex, false);
     this.add(gameModeLabel);
 
-    const timestampLabel = addTextObject(8, 33, new Date(data.timestamp).toLocaleString(), TextStyle.WINDOW);
+    const timestampLabel = addTextObject(8, 33, formatDateTimeForCurrentLanguage(data.timestamp), TextStyle.WINDOW);
     this.add(timestampLabel);
 
     // pokemonIconsContainer holds the run's party Pokemon icons and levels

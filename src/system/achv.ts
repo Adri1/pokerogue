@@ -106,10 +106,11 @@ export class MoneyAchv extends Achv {
   }
 
   public override get description(): string {
-    return i18next.t("achv:moneyAchv.description", {
+    const description = i18next.t("achv:moneyAchv.description", {
       context: getGenderStr(),
-      moneyAmount: this.moneyAmount.toLocaleString("en-US"),
+      moneyAmount: this.moneyAmount,
     });
+    return description.replace(/@\[MONEY\]\{([^{}]*)\}/g, "$1");
   }
 }
 
@@ -144,7 +145,7 @@ export class DamageAchv extends Achv {
   public override get description(): string {
     return i18next.t("achv:damageAchv.description", {
       context: getGenderStr(),
-      damageAmount: this.damageAmount.toLocaleString("en-US"),
+      damageAmount: this.damageAmount,
     });
   }
 }
@@ -163,7 +164,7 @@ export class HealAchv extends Achv {
   public override get description(): string {
     return i18next.t("achv:healAchv.description", {
       context: getGenderStr(),
-      healAmount: this.healAmount.toLocaleString("en-US"),
+      healAmount: this.healAmount,
       HP: i18next.t(getShortenedStatKey(Stat.HP)),
     });
   }

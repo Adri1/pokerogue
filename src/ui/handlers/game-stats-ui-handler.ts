@@ -9,7 +9,7 @@ import type { GameData } from "#system/game-data";
 import { addTextObject } from "#ui/text";
 import { UiHandler } from "#ui/ui-handler";
 import { addWindow } from "#ui/ui-theme";
-import { formatFancyLargeNumber, getPlayTimeString } from "#utils/common";
+import { formatFancyLargeNumber, formatNumberForCurrentLanguage, getPlayTimeString } from "#utils/common";
 import { toTitleCase } from "#utils/strings";
 import i18next from "i18next";
 import Phaser from "phaser";
@@ -31,71 +31,76 @@ const displayStats: DisplayStats = {
   },
   battles: {
     label_key: "totalBattles",
-    sourceFunc: gameData => gameData.gameStats.battles.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.battles),
   },
   startersUnlocked: {
     label_key: "starters",
     sourceFunc: gameData => {
       const starterCount = gameData.getStarterCount(d => !!d.caughtAttr);
-      return `${starterCount} (${Math.floor((starterCount / speciesDataRegistry.getAllStarters().length) * 1000) / 10}%)`;
+      const percentage = Math.floor((starterCount / speciesDataRegistry.getAllStarters().length) * 1000) / 10;
+      return `${formatNumberForCurrentLanguage(starterCount)} (${formatNumberForCurrentLanguage(percentage, { maximumFractionDigits: 1 })}%)`;
     },
   },
   shinyStartersUnlocked: {
     label_key: "shinyStarters",
     sourceFunc: gameData => {
       const starterCount = gameData.getStarterCount(d => !!(d.caughtAttr & DexAttr.SHINY));
-      return `${starterCount} (${Math.floor((starterCount / speciesDataRegistry.getAllStarters().length) * 1000) / 10}%)`;
+      const percentage = Math.floor((starterCount / speciesDataRegistry.getAllStarters().length) * 1000) / 10;
+      return `${formatNumberForCurrentLanguage(starterCount)} (${formatNumberForCurrentLanguage(percentage, { maximumFractionDigits: 1 })}%)`;
     },
   },
   dexEncountered: {
     label_key: "speciesEncountered",
     sourceFunc: gameData => {
       const seenCount = gameData.getSpeciesCount(d => !!d.seenCount);
-      return `${seenCount} (${Math.floor((seenCount / Object.keys(gameData.dexData).length) * 1000) / 10}%)`;
+      const percentage = Math.floor((seenCount / Object.keys(gameData.dexData).length) * 1000) / 10;
+      return `${formatNumberForCurrentLanguage(seenCount)} (${formatNumberForCurrentLanguage(percentage, { maximumFractionDigits: 1 })}%)`;
     },
   },
   dexSeen: {
     label_key: "speciesSeen",
     sourceFunc: gameData => {
       const seenCount = gameData.getSpeciesCount(d => !!d.seenAttr || !!d.caughtAttr);
-      return `${seenCount} (${Math.floor((seenCount / Object.keys(gameData.dexData).length) * 1000) / 10}%)`;
+      const percentage = Math.floor((seenCount / Object.keys(gameData.dexData).length) * 1000) / 10;
+      return `${formatNumberForCurrentLanguage(seenCount)} (${formatNumberForCurrentLanguage(percentage, { maximumFractionDigits: 1 })}%)`;
     },
   },
   dexCaught: {
     label_key: "speciesCaught",
     sourceFunc: gameData => {
       const caughtCount = gameData.getSpeciesCount(d => !!d.caughtAttr);
-      return `${caughtCount} (${Math.floor((caughtCount / Object.keys(gameData.dexData).length) * 1000) / 10}%)`;
+      const percentage = Math.floor((caughtCount / Object.keys(gameData.dexData).length) * 1000) / 10;
+      return `${formatNumberForCurrentLanguage(caughtCount)} (${formatNumberForCurrentLanguage(percentage, { maximumFractionDigits: 1 })}%)`;
     },
   },
   ribbonsOwned: {
     label_key: "ribbonsOwned",
-    sourceFunc: gameData => gameData.gameStats.ribbonsOwned.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.ribbonsOwned),
   },
   classicSessionsPlayed: {
     label_key: "classicRuns",
-    sourceFunc: gameData => gameData.gameStats.classicSessionsPlayed.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.classicSessionsPlayed),
   },
   sessionsWon: {
     label_key: "classicWins",
-    sourceFunc: gameData => gameData.gameStats.sessionsWon.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.sessionsWon),
   },
   dailyRunSessionsPlayed: {
     label_key: "dailyRunAttempts",
-    sourceFunc: gameData => gameData.gameStats.dailyRunSessionsPlayed.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.dailyRunSessionsPlayed),
   },
   dailyRunSessionsWon: {
     label_key: "dailyRunWins",
-    sourceFunc: gameData => gameData.gameStats.dailyRunSessionsWon.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.dailyRunSessionsWon),
   },
   endlessSessionsPlayed: {
     label_key: "endlessRuns",
-    sourceFunc: gameData => gameData.gameStats.endlessSessionsPlayed.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.endlessSessionsPlayed),
     hidden: true,
   },
   highestEndlessWave: {
     label_key: "highestWaveEndless",
-    sourceFunc: gameData => gameData.gameStats.highestEndlessWave.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.highestEndlessWave),
     hidden: true,
   },
   highestMoney: {
@@ -104,120 +109,120 @@ const displayStats: DisplayStats = {
   },
   highestDamage: {
     label_key: "highestDamage",
-    sourceFunc: gameData => gameData.gameStats.highestDamage.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.highestDamage),
   },
   highestHeal: {
     label_key: "highestHpHealed",
-    sourceFunc: gameData => gameData.gameStats.highestHeal.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.highestHeal),
   },
   pokemonSeen: {
     label_key: "pokemonEncountered",
-    sourceFunc: gameData => gameData.gameStats.pokemonSeen.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.pokemonSeen),
   },
   pokemonDefeated: {
     label_key: "pokemonDefeated",
-    sourceFunc: gameData => gameData.gameStats.pokemonDefeated.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.pokemonDefeated),
   },
   pokemonCaught: {
     label_key: "pokemonCaught",
-    sourceFunc: gameData => gameData.gameStats.pokemonCaught.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.pokemonCaught),
   },
   pokemonHatched: {
     label_key: "eggsHatched",
-    sourceFunc: gameData => gameData.gameStats.pokemonHatched.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.pokemonHatched),
   },
   subLegendaryPokemonSeen: {
     label_key: "subLegendsSeen",
-    sourceFunc: gameData => gameData.gameStats.subLegendaryPokemonSeen.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.subLegendaryPokemonSeen),
     hidden: true,
   },
   subLegendaryPokemonCaught: {
     label_key: "subLegendsCaught",
-    sourceFunc: gameData => gameData.gameStats.subLegendaryPokemonCaught.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.subLegendaryPokemonCaught),
     hidden: true,
   },
   subLegendaryPokemonHatched: {
     label_key: "subLegendsHatched",
-    sourceFunc: gameData => gameData.gameStats.subLegendaryPokemonHatched.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.subLegendaryPokemonHatched),
     hidden: true,
   },
   legendaryPokemonSeen: {
     label_key: "legendsSeen",
-    sourceFunc: gameData => gameData.gameStats.legendaryPokemonSeen.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.legendaryPokemonSeen),
     hidden: true,
   },
   legendaryPokemonCaught: {
     label_key: "legendsCaught",
-    sourceFunc: gameData => gameData.gameStats.legendaryPokemonCaught.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.legendaryPokemonCaught),
     hidden: true,
   },
   legendaryPokemonHatched: {
     label_key: "legendsHatched",
-    sourceFunc: gameData => gameData.gameStats.legendaryPokemonHatched.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.legendaryPokemonHatched),
     hidden: true,
   },
   mythicalPokemonSeen: {
     label_key: "mythicalsSeen",
-    sourceFunc: gameData => gameData.gameStats.mythicalPokemonSeen.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.mythicalPokemonSeen),
     hidden: true,
   },
   mythicalPokemonCaught: {
     label_key: "mythicalsCaught",
-    sourceFunc: gameData => gameData.gameStats.mythicalPokemonCaught.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.mythicalPokemonCaught),
     hidden: true,
   },
   mythicalPokemonHatched: {
     label_key: "mythicalsHatched",
-    sourceFunc: gameData => gameData.gameStats.mythicalPokemonHatched.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.mythicalPokemonHatched),
     hidden: true,
   },
   shinyPokemonSeen: {
     label_key: "shiniesSeen",
-    sourceFunc: gameData => gameData.gameStats.shinyPokemonSeen.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.shinyPokemonSeen),
     hidden: true,
   },
   shinyPokemonCaught: {
     label_key: "shiniesCaught",
-    sourceFunc: gameData => gameData.gameStats.shinyPokemonCaught.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.shinyPokemonCaught),
     hidden: true,
   },
   shinyPokemonHatched: {
     label_key: "shiniesHatched",
-    sourceFunc: gameData => gameData.gameStats.shinyPokemonHatched.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.shinyPokemonHatched),
     hidden: true,
   },
   pokemonFused: {
     label_key: "pokemonFused",
-    sourceFunc: gameData => gameData.gameStats.pokemonFused.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.pokemonFused),
     hidden: true,
   },
   trainersDefeated: {
     label_key: "trainersDefeated",
-    sourceFunc: gameData => gameData.gameStats.trainersDefeated.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.trainersDefeated),
   },
   eggsPulled: {
     label_key: "eggsPulled",
-    sourceFunc: gameData => gameData.gameStats.eggsPulled.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.eggsPulled),
     hidden: true,
   },
   rareEggsPulled: {
     label_key: "rareEggsPulled",
-    sourceFunc: gameData => gameData.gameStats.rareEggsPulled.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.rareEggsPulled),
     hidden: true,
   },
   epicEggsPulled: {
     label_key: "epicEggsPulled",
-    sourceFunc: gameData => gameData.gameStats.epicEggsPulled.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.epicEggsPulled),
     hidden: true,
   },
   legendaryEggsPulled: {
     label_key: "legendaryEggsPulled",
-    sourceFunc: gameData => gameData.gameStats.legendaryEggsPulled.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.legendaryEggsPulled),
     hidden: true,
   },
   manaphyEggsPulled: {
     label_key: "manaphyEggsPulled",
-    sourceFunc: gameData => gameData.gameStats.manaphyEggsPulled.toString(),
+    sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats.manaphyEggsPulled),
     hidden: true,
   },
 };
@@ -563,12 +568,12 @@ export function initStatsKeys() {
       }
       displayStats[key] = {
         label_key: label,
-        sourceFunc: gameData => gameData.gameStats[key].toString(),
+        sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats[key]),
         hidden,
       };
     } else if (displayStats[key] === null) {
       displayStats[key] = {
-        sourceFunc: gameData => gameData.gameStats[key].toString(),
+        sourceFunc: gameData => formatNumberForCurrentLanguage(gameData.gameStats[key]),
       };
     }
     if (!displayStats[key].label_key) {

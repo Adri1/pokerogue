@@ -17,7 +17,7 @@ import type { CommandPhase } from "#phases/command-phase";
 import { MoveInfoOverlay } from "#ui/move-info-overlay";
 import { addTextObject, getTextColor } from "#ui/text";
 import { UiHandler } from "#ui/ui-handler";
-import { fixedInt, getLocalizedSpriteKey, padInt } from "#utils/common";
+import { fixedInt, formatNumberForCurrentLanguage, getLocalizedSpriteKey, padInt } from "#utils/common";
 import i18next from "i18next";
 
 export class FightUiHandler extends UiHandler implements InfoToggle {
@@ -336,7 +336,9 @@ export class FightUiHandler extends UiHandler implements InfoToggle {
       return i18next.t("fightUiHandler:effectiveness100");
     }
 
-    return i18next.t("fightUiHandler:effectivenessMultiplier", { effectiveness });
+    return i18next.t("fightUiHandler:effectivenessMultiplier", {
+      effectiveness: formatNumberForCurrentLanguage(effectiveness, { maximumFractionDigits: 2 }),
+    });
   }
 
   displayMoves() {

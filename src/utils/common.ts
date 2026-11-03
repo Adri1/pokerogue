@@ -203,7 +203,9 @@ export function getIvsFromId(id: number): [number, number, number, number, numbe
 
 export function formatLargeNumber(count: number, threshold: number): string {
   if (count < threshold) {
-    return count.toString();
+    return Number.isInteger(count)
+      ? count.toString()
+      : formatNumberForCurrentLanguage(count, { useGrouping: false, maximumFractionDigits: 20 });
   }
   const ret = count.toString();
   let suffix = "";
@@ -231,7 +233,11 @@ export function formatLargeNumber(count: number, threshold: number): string {
   while (decimalNumber.endsWith("0")) {
     decimalNumber = decimalNumber.slice(0, -1);
   }
-  return `${ret.slice(0, digits)}${decimalNumber ? `.${decimalNumber}` : ""}${suffix}`;
+  const abbreviatedNumber = Number(`${ret.slice(0, digits)}${decimalNumber ? `.${decimalNumber}` : ""}`);
+  return `${formatNumberForCurrentLanguage(abbreviatedNumber, {
+    useGrouping: false,
+    maximumFractionDigits: 2,
+  })}${suffix}`;
 }
 
 // Abbreviations from 10^0 to 10^33
@@ -267,14 +273,86 @@ export function formatFancyLargeNumber(number: number, rounded = 3): string {
     number /= Math.pow(1000, exponent);
   }
 
-  return `${exponent === 0 || number % 1 === 0 ? number : number.toFixed(rounded)}${abbreviations[exponent]}`;
+  let formattedNumber: string;
+  if (exponent === 0) {
+    formattedNumber = formatNumberForCurrentLanguage(number, {
+      useGrouping: false,
+      maximumFractionDigits: 20,
+    });
+  } else if (number % 1 === 0) {
+    formattedNumber = number.toString();
+  } else {
+    formattedNumber = formatNumberForCurrentLanguage(number, {
+      useGrouping: false,
+      minimumFractionDigits: rounded,
+      maximumFractionDigits: rounded,
+    });
+  }
+  return `${formattedNumber}${abbreviations[exponent]}`;
 }
 
-export function formatMoney(format: MoneyFormat, amount: number) {
+export function formatNumberForCurrentLanguage(value: number, options?: Intl.NumberFormatOptions): string {
+  const language = i18next.resolvedLanguage ?? i18next.language ?? "en";
+  return new Intl.NumberFormat(language, options).format(value);
+}
+
+/**
+ * Formats a starter cost (e.g. `0.5`, `3.5`) using the game language's decimal separator.
+ * @param cost - The cost to format
+ * @param trimLeadingZero - Whether to drop the integer part of costs below 1 (`0.5` becomes `.5`)
+ */
+export function formatStarterCost(cost: number, trimLeadingZero = false): string {
+  const formatted = formatNumberForCurrentLanguage(cost, { maximumFractionDigits: 2 });
+  return trimLeadingZero && cost > 0 && cost < 1 ? formatted.replace(/^0(?=\D)/, "") : formatted;
+}
+
+export function formatDateForCurrentLanguage(date: Date | number, options?: Intl.DateTimeFormatOptions): string {
+  const language = i18next.resolvedLanguage ?? i18next.language ?? "en";
+  const dateLocale = getDateLocaleForLanguage(language);
+  const dateOptions: Intl.DateTimeFormatOptions | undefined =
+    dateLocale === "en-GB" ? { ...options, day: "2-digit", month: "2-digit", year: "numeric" } : options;
+  return new Date(date).toLocaleDateString(dateLocale, dateOptions);
+}
+
+export function formatDateTimeForCurrentLanguage(date: Date | number): string {
+  const language = i18next.resolvedLanguage ?? i18next.language ?? "en";
+  const dateLocale = getDateLocaleForLanguage(language);
+  const dateValue = new Date(date);
+  if (dateLocale === "en-GB") {
+    const formattedDate = dateValue.toLocaleDateString(dateLocale, {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    return `${formattedDate}, ${dateValue.toLocaleTimeString(language)}`;
+  }
+  return dateValue.toLocaleString(dateLocale);
+}
+
+export function getDateLocaleForLanguage(
+  language: string,
+  systemLocale = Intl.DateTimeFormat().resolvedOptions().locale,
+): string {
+  if (!language.toLowerCase().startsWith("en")) {
+    return language;
+  }
+
+  const systemDateParts = new Intl.DateTimeFormat(systemLocale, {
+    day: "numeric",
+    month: "numeric",
+    year: "numeric",
+  }).formatToParts(new Date(2000, 10, 22));
+  const monthIndex = systemDateParts.findIndex(part => part.type === "month");
+  const dayIndex = systemDateParts.findIndex(part => part.type === "day");
+  const yearIndex = systemDateParts.findIndex(part => part.type === "year");
+  return monthIndex < dayIndex && dayIndex < yearIndex ? language : "en-GB";
+}
+
+export function formatMoney(format: MoneyFormat, amount: number): string {
   if (format === MoneyFormat.ABBREVIATED) {
     return formatFancyLargeNumber(amount);
   }
-  return amount.toLocaleString();
+  return formatNumberForCurrentLanguage(amount);
 }
 
 export function formatStat(stat: number, forHp = false): string {

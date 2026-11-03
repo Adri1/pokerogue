@@ -85,7 +85,7 @@ import { addTextObject, getTextColor } from "#ui/text";
 import { addWindow } from "#ui/ui-theme";
 import { checkStarterValidForChallenge } from "#utils/challenge-utils";
 import { argbFromRgba, rgbHexToRgba } from "#utils/color-utils";
-import { fixedInt, getLocalizedSpriteKey } from "#utils/common";
+import { fixedInt, formatStarterCost, getLocalizedSpriteKey } from "#utils/common";
 import { deepCopy, loadStarterPreferences, saveStarterPreferences } from "#utils/data";
 import { getPokerusStarters, getStarterColors } from "#utils/pokemon-utils";
 import i18next from "i18next";
@@ -1972,7 +1972,7 @@ export class StarterSelectUiHandler extends MessageUiHandler {
         const starterCost = speciesDataRegistry.getStarterCost(this.lastStarterId);
         const reductionCost = getValueReductionCandyCounts(starterCost)[valueReduction];
         useCandiesOptions.push({
-          label: `×${reductionCost} ${i18next.t("starterSelectUiHandler:reduceCost", { newCost: globalScene.gameData.getSpeciesStarterValue(this.lastStarterId, starterData.valueReduction + 1) })}`,
+          label: `×${reductionCost} ${i18next.t("starterSelectUiHandler:reduceCost", { newCost: formatStarterCost(globalScene.gameData.getSpeciesStarterValue(this.lastStarterId, starterData.valueReduction + 1)) })}`,
           handler: () => {
             if (activeOverrides.FREE_CANDY_UPGRADE_OVERRIDE || candyCount >= reductionCost) {
               persistentStarterData.valueReduction++;
@@ -3040,11 +3040,7 @@ export class StarterSelectUiHandler extends MessageUiHandler {
     }
     const starterValue = globalScene.gameData.getSpeciesStarterValue(speciesId);
     starter.cost = starterValue;
-    let valueStr: string = starterValue.toString();
-    if (valueStr.startsWith("0.")) {
-      valueStr = valueStr.slice(1);
-    }
-    starter.label.setText(valueStr);
+    starter.label.setText(formatStarterCost(starterValue, true));
     let textStyle: TextStyle;
     switch (baseStarterValue - starterValue) {
       case -2:
@@ -3070,12 +3066,8 @@ export class StarterSelectUiHandler extends MessageUiHandler {
     const newValue = value + add;
     const valueLimit = getRunValueLimit();
     const overLimit = newValue > valueLimit;
-    let newValueStr: string = newValue.toString();
-    if (newValueStr.startsWith("0.")) {
-      newValueStr = newValueStr.slice(1);
-    }
     this.valueLimitLabel
-      .setText(`${newValueStr}/${valueLimit}`)
+      .setText(`${formatStarterCost(newValue, true)}/${formatStarterCost(valueLimit)}`)
       .setColor(getTextColor(overLimit ? TextStyle.SUMMARY_PINK : TextStyle.TOOLTIP_CONTENT))
       .setShadowColor(getTextColor(overLimit ? TextStyle.SUMMARY_PINK : TextStyle.TOOLTIP_CONTENT, true));
     if (overLimit) {

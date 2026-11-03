@@ -8,6 +8,7 @@ import { ScrollBar } from "#ui/scroll-bar";
 import { ScrollableGridHelper } from "#ui/scrollable-grid-helper";
 import { addTextObject } from "#ui/text";
 import { addWindow } from "#ui/ui-theme";
+import { formatDateForCurrentLanguage } from "#utils/common";
 import i18next from "i18next";
 
 export class EggListUiHandler extends MessageUiHandler {
@@ -154,7 +155,7 @@ export class EggListUiHandler extends MessageUiHandler {
     this.eggSprite.setFrame(`egg_${egg.getKey()}`);
     this.eggNameText.setText(`${i18next.t("egg:egg")} (${egg.getEggDescriptor()})`);
     this.eggDateText.setText(
-      new Date(egg.timestamp).toLocaleString(undefined, {
+      formatDateForCurrentLanguage(egg.timestamp, {
         weekday: "short",
         year: "numeric",
         month: "2-digit",

@@ -37,7 +37,7 @@ import { isPassiveAvailable, isSameSpeciesEggAvailable, isValueReductionAvailabl
 import { addTextObject, getTextColor } from "#ui/text";
 import { addWindow } from "#ui/ui-theme";
 import { argbFromRgba, rgbHexToRgba } from "#utils/color-utils";
-import { BooleanHolder, fixedInt, getLocalizedSpriteKey, padInt, randIntRange } from "#utils/common";
+import { BooleanHolder, fixedInt, formatStarterCost, getLocalizedSpriteKey, padInt, randIntRange } from "#utils/common";
 import { loadStarterPreferences } from "#utils/data";
 import { enumValueToKey } from "#utils/enums";
 import { getDexNumber, getPokerusStarters, getStarterColors } from "#utils/pokemon-utils";
@@ -2295,11 +2295,7 @@ export class PokedexUiHandler extends MessageUiHandler {
     const baseStarterValue = speciesDataRegistry.getStarterCost(speciesId);
     const starterValue = this.gameData.getSpeciesStarterValue(speciesDataRegistry.getStarter(speciesId));
     starter.cost = starterValue;
-    let valueStr: string = starterValue.toString();
-    if (valueStr.startsWith("0.")) {
-      valueStr = valueStr.slice(1);
-    }
-    starter.label.setText(valueStr);
+    starter.label.setText(formatStarterCost(starterValue, true));
     let textStyle: TextStyle;
     switch (baseStarterValue - starterValue) {
       case 0:

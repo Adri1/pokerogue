@@ -19,7 +19,13 @@ import { MessageUiHandler } from "#ui/message-ui-handler";
 import { RunDisplayMode } from "#ui/run-info-ui-handler";
 import { addTextObject } from "#ui/text";
 import { addWindow } from "#ui/ui-theme";
-import { fixedInt, formatLargeNumber, getPlayTimeString } from "#utils/common";
+import {
+  fixedInt,
+  formatDateForCurrentLanguage,
+  formatDateTimeForCurrentLanguage,
+  formatLargeNumber,
+  getPlayTimeString,
+} from "#utils/common";
 import i18next from "i18next";
 import Phaser from "phaser";
 
@@ -519,7 +525,7 @@ class SessionSlot extends Phaser.GameObjects.Container {
         fallbackName += ` (${globalScene.gameData.gameStats.endlessSessionsPlayed + 1})`;
         break;
       case GameModes.DAILY: {
-        const runDay = new Date(data.timestamp).toLocaleDateString();
+        const runDay = formatDateForCurrentLanguage(data.timestamp);
         fallbackName += ` (${runDay})`;
         break;
       }
@@ -571,7 +577,7 @@ class SessionSlot extends Phaser.GameObjects.Container {
     );
     this.add(gameModeLabel);
 
-    const timestampLabel = addTextObject(8, 33, new Date(data.timestamp).toLocaleString(), TextStyle.WINDOW);
+    const timestampLabel = addTextObject(8, 33, formatDateTimeForCurrentLanguage(data.timestamp), TextStyle.WINDOW);
     this.add(timestampLabel);
 
     const playTimeLabel = addTextObject(8, 47, getPlayTimeString(data.playTime), TextStyle.WINDOW);

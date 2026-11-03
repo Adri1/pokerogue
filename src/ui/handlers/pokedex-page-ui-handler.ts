@@ -66,7 +66,7 @@ import {
 } from "#ui/text";
 import { addWindow } from "#ui/ui-theme";
 import { argbFromRgba, rgbHexToRgba } from "#utils/color-utils";
-import { BooleanHolder, getLocalizedSpriteKey, padInt } from "#utils/common";
+import { BooleanHolder, formatStarterCost, getLocalizedSpriteKey, padInt } from "#utils/common";
 import { enumValueToKey, getEnumValues } from "#utils/enums";
 import { getDexNumber, getStarterColors } from "#utils/pokemon-utils";
 import { toCamelCase, toTitleCase } from "#utils/strings";
@@ -2000,7 +2000,7 @@ export class PokedexPageUiHandler extends MessageUiHandler {
                 valueReduction
               ];
               options.push({
-                label: `×${reductionCost} ${i18next.t("starterSelectUiHandler:reduceCost", { newCost: globalScene.gameData.getSpeciesStarterValue(this.starterId, starterData.valueReduction + 1) })}`,
+                label: `×${reductionCost} ${i18next.t("starterSelectUiHandler:reduceCost", { newCost: formatStarterCost(globalScene.gameData.getSpeciesStarterValue(this.starterId, starterData.valueReduction + 1)) })}`,
                 handler: () => {
                   if (!activeOverrides.FREE_CANDY_UPGRADE_OVERRIDE && candyCount < reductionCost) {
                     return false;
