@@ -21,12 +21,12 @@ interface LoadingFontFaceProperty {
 // #region Constants
 
 const unicodeRanges = {
-  fullwidth: "U+FF00-FFEF",
+  fullwidth: "U+FF00-FF0F,U+FF1A-FFEF",
+  fullwidthDigits: "U+FF10-FF19",
   CJKCommon: "U+2E80-2EFF,U+3000-303F,U+31C0-31EF,U+3200-32FF,U+3400-4DBF,U+F900-FAFF,U+FE30-FE4F",
   CJKIdeograph: "U+4E00-9FFF",
   devanagari: "U+0900-097F",
   thai: "U+0E00-0E7F",
-  specialCharacters: "U+266A,U+2605,U+2665,U+2663", // ♪, ★, ♥, ♣
 };
 
 const rangesByLanguage = {
@@ -34,13 +34,6 @@ const rangesByLanguage = {
 };
 
 const fonts: LoadingFontFaceProperty[] = [
-  // unicode (special characters)
-  {
-    face: new FontFace("pkmnems", `url(${getCachedUrl("./fonts/pokemon-emerald-pro.ttf")})`, {
-      unicodeRange: unicodeRanges.specialCharacters,
-    }),
-    extraOptions: { sizeAdjust: "133%" },
-  },
   // unicode (chinese)
   {
     face: new FontFace("pkmnems", `url(${getCachedUrl("./fonts/pokemon-emerald-pro.ttf")})`, {
@@ -69,6 +62,12 @@ const fonts: LoadingFontFaceProperty[] = [
       "eu",
       "zh",
     ],
+  },
+  {
+    face: new FontFace("emerald", `url(${getCachedUrl("./fonts/pkmnems.ttf")})`, {
+      unicodeRange: unicodeRanges.fullwidthDigits,
+    }),
+    only: ["ja", "zh"],
   },
   // devanagari
   {
