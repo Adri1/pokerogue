@@ -28,7 +28,15 @@ import type { ConfirmModeConfig, OptionSelectItem } from "#types/ui-types";
 import { addBBCodeTextObject, addTextObject, getBBCodeFrag, getTextColor, updateCandyCountTextStyle } from "#ui/text";
 import { UiHandler } from "#ui/ui-handler";
 import { argbFromRgba, rgbHexToRgba } from "#utils/color-utils";
-import { fixedInt, formatStat, getBiomeName, getLocalizedSpriteKey, getShinyDescriptor, padInt } from "#utils/common";
+import {
+  fixedInt,
+  formatStat,
+  getBiomeName,
+  getLocalizedSpriteKey,
+  getShinyDescriptor,
+  padInt,
+  toFullWidthAlphanumerics,
+} from "#utils/common";
 import { getEnumValues } from "#utils/enums";
 import { addMask } from "#utils/mask-utils";
 import { getDexNumber, getStarterColors } from "#utils/pokemon-utils";
@@ -783,9 +791,13 @@ export class SummaryUiHandler extends UiHandler {
       const selectedMove = this.getSelectedMove();
 
       if (selectedMove) {
+        const language = i18next.resolvedLanguage ?? i18next.language ?? "en";
+        const useFullWidthNumbers = language.toLowerCase().startsWith("ja") || language.toLowerCase().startsWith("zh");
         this.moveDescriptionText.setY(74);
-        this.movePowerText.setText(selectedMove.power >= 0 ? selectedMove.power.toString() : "---");
-        this.moveAccuracyText.setText(selectedMove.accuracy >= 0 ? selectedMove.accuracy.toString() : "---");
+        const power = selectedMove.power >= 0 ? selectedMove.power.toString() : "---";
+        const accuracy = selectedMove.accuracy >= 0 ? selectedMove.accuracy.toString() : "---";
+        this.movePowerText.setText(useFullWidthNumbers ? toFullWidthAlphanumerics(power) : power);
+        this.moveAccuracyText.setText(useFullWidthNumbers ? toFullWidthAlphanumerics(accuracy) : accuracy);
         this.moveCategoryIcon.setFrame(MoveCategory[selectedMove.category].toLowerCase());
         this.showMoveEffect();
       } else {
