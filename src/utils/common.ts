@@ -318,6 +318,12 @@ export function toFullWidthAlphanumerics(value: unknown): string {
   return String(value).replace(/[A-Za-z0-9/()]/g, character => String.fromCharCode(character.charCodeAt(0) + 0xfee0));
 }
 
+/** Converts the text to full-width characters when the current language is Japanese or Chinese */
+export function toFullWidthForCurrentLanguage(value: unknown): string {
+  const language = (i18next.resolvedLanguage ?? i18next.language ?? "en").toLowerCase();
+  return language.startsWith("ja") || language.startsWith("zh") ? toFullWidthAlphanumerics(value) : String(value);
+}
+
 export function formatDateTimeForCurrentLanguage(date: Date | number): string {
   const language = i18next.resolvedLanguage ?? i18next.language ?? "en";
   const dateLocale = getDateLocaleForLanguage(language);

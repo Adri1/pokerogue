@@ -24,6 +24,7 @@ import type {
   SettingsUiItem,
   SettingUiItemOption,
 } from "#types/settings";
+import { toFullWidthForCurrentLanguage } from "#utils/common";
 import i18next, { t } from "i18next";
 
 // #region Types
@@ -67,7 +68,7 @@ function useAutoDisabledOptions(autoInit: UseOptionInit = {}, disabledInit: UseO
 function useVolumeOptions(): SettingUiItemOption[] {
   return Array.from({ length: 11 }).map((_, i) => ({
     value: Number((i * 0.1).toFixed(1)),
-    label: i > 0 ? `${i * 10}` : t("settings:mute"),
+    label: i > 0 ? toFullWidthForCurrentLanguage(i * 10) : t("settings:mute"),
   }));
 }
 
@@ -263,7 +264,7 @@ export const displaySettingUiItems: SettingsUiItem<DisplaySettingsKey>[] = [
   {
     key: "uiWindowStyle",
     label: t("settings:windowType"),
-    options: Array.from({ length: 5 }).map((_, i) => ({ value: i + 1, label: `${i + 1}` })),
+    options: Array.from({ length: 5 }).map((_, i) => ({ value: i + 1, label: toFullWidthForCurrentLanguage(i + 1) })),
   },
   {
     key: "moneyFormat",
@@ -398,7 +399,7 @@ export const displaySettingUiItems: SettingsUiItem<DisplaySettingsKey>[] = [
     label: t("settings:shopOverlayOpacity"),
     options: Array.from({ length: 9 }).map((_, i) => ({
       value: Number(((i + 1) * 0.1).toFixed(1)),
-      label: `${(i + 1) * 10}`,
+      label: toFullWidthForCurrentLanguage((i + 1) * 10),
     })),
   },
 ];
