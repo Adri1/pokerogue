@@ -293,7 +293,10 @@ export function formatFancyLargeNumber(number: number, rounded = 3): string {
 
 export function formatNumberForCurrentLanguage(value: number, options?: Intl.NumberFormatOptions): string {
   const language = i18next.resolvedLanguage ?? i18next.language ?? "en";
-  return new Intl.NumberFormat(language, options).format(value);
+  return new Intl.NumberFormat(language, options)
+    .formatToParts(value)
+    .map(part => (part.type === "group" && /^\s+$/u.test(part.value) ? "\u202f" : part.value))
+    .join("");
 }
 
 /**
@@ -360,7 +363,7 @@ export function getDateLocaleForLanguage(
 
 export function formatMoney(format: MoneyFormat, amount: number): string {
   if (format === MoneyFormat.ABBREVIATED) {
-    return formatFancyLargeNumber(amount);
+    return amount < 1_000_000 ? formatNumberForCurrentLanguage(amount) : formatFancyLargeNumber(amount);
   }
   return formatNumberForCurrentLanguage(amount);
 }
