@@ -8,7 +8,7 @@ import type { ExpGainsSpeed } from "#enums/exp-gains-speed";
 import type { ExpNotification } from "#enums/exp-notification";
 import type { GameSpeed } from "#enums/game-speed";
 import type { HpBarSpeed } from "#enums/hp-bar-speed";
-import type { KeyboardLayout } from "#enums/keyboard-layout";
+import type { KeyboardLayout, KeyboardLayoutPreset } from "#enums/keyboard-layout";
 import type { MoneyFormat } from "#enums/money-format";
 import type { MusicPreference } from "#enums/music-preference";
 import type { PlayerGender } from "#enums/player-gender";
@@ -97,6 +97,8 @@ export interface GamepadSettings {
 
 export interface KeyboardSettings {
   layout: KeyboardLayout;
+  /** Last keyboard layout detected while using the system preset */
+  detectedLayout: KeyboardLayoutPreset;
   /** Whether the system's keyboard layout has already been auto-detected */
   layoutDetected: boolean;
 }

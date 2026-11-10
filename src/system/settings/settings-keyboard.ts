@@ -2,7 +2,6 @@ import { globalScene } from "#app/global-scene";
 import { settings } from "#app/global-settings-manager";
 import { isDev } from "#constants/app-constants";
 import { Button } from "#enums/buttons";
-import { Device } from "#enums/devices";
 import { KeyboardLayout } from "#enums/keyboard-layout";
 import { UiMode } from "#enums/ui-mode";
 import type { SettingsKeyboardUiHandler } from "#ui/keyboard-settings-ui-handler";
@@ -49,8 +48,19 @@ export enum SettingKeyboard {
 
 const pressAction = i18next.t("settings:pressToBind");
 
+export const keyboardLayoutOptions = [
+  { layout: KeyboardLayout.AUTO, label: "Auto" },
+  { layout: KeyboardLayout.QWERTY, label: "QWERTY" },
+  { layout: KeyboardLayout.AZERTY, label: "AZERTY" },
+  { layout: KeyboardLayout.QWERTZ, label: "QWERTZ" },
+] as const;
+
+export function getKeyboardLayoutOptionIndex(layout: KeyboardLayout): number {
+  return keyboardLayoutOptions.findIndex(option => option.layout === layout);
+}
+
 export const settingKeyboardOptions = {
-  [SettingKeyboard.KEYBOARD_LAYOUT]: ["QWERTY", "AZERTY", "QWERTZ"],
+  [SettingKeyboard.KEYBOARD_LAYOUT]: keyboardLayoutOptions.map(option => option.label),
   [SettingKeyboard.BUTTON_UP]: [`KEY ${Button.UP.toString()}`, pressAction],
   [SettingKeyboard.BUTTON_DOWN]: [`KEY ${Button.DOWN.toString()}`, pressAction],
   [SettingKeyboard.ALT_BUTTON_UP]: [`KEY ${Button.UP.toString()}`, pressAction],
@@ -89,7 +99,7 @@ export const settingKeyboardOptions = {
 };
 
 export const settingKeyboardDefaults = {
-  [SettingKeyboard.KEYBOARD_LAYOUT]: KeyboardLayout.QWERTY,
+  [SettingKeyboard.KEYBOARD_LAYOUT]: getKeyboardLayoutOptionIndex(KeyboardLayout.AUTO),
   [SettingKeyboard.BUTTON_UP]: 0,
   [SettingKeyboard.BUTTON_DOWN]: 0,
   [SettingKeyboard.BUTTON_LEFT]: 0,
@@ -142,17 +152,15 @@ export const settingKeyboardBlackList = [
 export function setSettingKeyboard(setting: SettingKeyboard, value: number): boolean {
   switch (setting) {
     case SettingKeyboard.KEYBOARD_LAYOUT:
-      if (settings.keyboard.layout !== value) {
-        settings.update("keyboard", "layout", value);
-        settings.update("keyboard", "layoutDetected", true);
-        // The key held to change the option may map to a different button (or none) in the new layout,
-        // so its release would never be matched and the input would repeat forever.
-        // Deferred, as the controller registers the repeat interval after this input event returns.
-        setTimeout(() => globalScene.inputController.deactivatePressedKey());
-        // Rebuild the bindings from the default binds of the newly selected preset
-        globalScene.gameData.resetMappingToDefault(Device.KEYBOARD);
-        globalScene.inputController.resetConfig(Device.KEYBOARD);
-        globalScene.ui?.getHandler<SettingsKeyboardUiHandler>()?.updateBindings();
+      {
+        const layout = keyboardLayoutOptions[value]?.layout;
+        if (layout !== undefined && settings.keyboard.layout !== layout) {
+          globalScene.inputController.setKeyboardLayout(layout);
+          // The key held to change the option may map to a different button (or none) in the new layout,
+          // so its release would never be matched and the input would repeat forever.
+          // Deferred, as the controller registers the repeat interval after this input event returns.
+          setTimeout(() => globalScene.inputController.deactivatePressedKey());
+        }
       }
       break;
     case SettingKeyboard.BUTTON_UP:

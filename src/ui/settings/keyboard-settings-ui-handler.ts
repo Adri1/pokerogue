@@ -1,4 +1,5 @@
 import { globalScene } from "#app/global-scene";
+import { settings } from "#app/global-settings-manager";
 import { Device } from "#enums/devices";
 import { KeyboardLayout } from "#enums/keyboard-layout";
 import { TextStyle } from "#enums/text-style";
@@ -6,6 +7,7 @@ import { UiMode } from "#enums/ui-mode";
 import { CFG_KEYBOARD_QWERTY } from "#inputs/cfg-keyboard-qwerty";
 import { deleteBind } from "#inputs/config-handler";
 import {
+  getKeyboardLayoutOptionIndex,
   SettingKeyboard,
   setSettingKeyboard,
   settingKeyboardBlackList,
@@ -98,7 +100,11 @@ export class SettingsKeyboardUiHandler extends BaseControlSettingsUiHandler {
     }
     const isKeyboard = globalScene.ui.mode === UiMode.SETTINGS_KEYBOARD;
     if (isKeyboard && this.isOnLayoutRow()) {
-      this.setOptionCursor(0, KeyboardLayout.QWERTY, true);
+      if (settings.keyboard.layout === KeyboardLayout.AUTO) {
+        void globalScene.inputController.redetectKeyboardLayout();
+      } else {
+        this.setOptionCursor(0, getKeyboardLayoutOptionIndex(KeyboardLayout.AUTO), true);
+      }
       return;
     }
     globalScene.gameData.resetMappingToDefault(isKeyboard ? Device.KEYBOARD : Device.GAMEPAD);

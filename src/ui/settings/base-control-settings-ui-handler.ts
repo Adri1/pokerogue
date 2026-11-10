@@ -5,6 +5,7 @@ import type { Device } from "#enums/devices";
 import { TextStyle } from "#enums/text-style";
 import { UiMode } from "#enums/ui-mode";
 import { getIconWithSettingName } from "#inputs/config-handler";
+import { getKeyboardLayoutOptionIndex } from "#system/settings-keyboard";
 import type { CustomInterfaceConfig, InterfaceConfig, MappingSettingName } from "#types/inputs";
 import type { InputsIcons, LayoutConfig } from "#types/ui-types";
 import { ScrollBar } from "#ui/scroll-bar";
@@ -296,7 +297,7 @@ export abstract class BaseControlSettingsUiHandler extends UiHandler {
       if (key === "enabled") {
         this.setOptionCursor(index, Number(!settings.gamepad[key]));
       } else if (key === "layout") {
-        this.setOptionCursor(index, settings.keyboard.layout);
+        this.setOptionCursor(index, getKeyboardLayoutOptionIndex(settings.keyboard.layout));
       }
     });
 

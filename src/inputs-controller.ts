@@ -4,7 +4,7 @@ import { settings } from "#app/global-settings-manager";
 import { TouchControl } from "#app/touch-controls";
 import { Button } from "#enums/buttons";
 import { Device } from "#enums/devices";
-import type { KeyboardLayout } from "#enums/keyboard-layout";
+import { KeyboardLayout, type KeyboardLayoutPreset } from "#enums/keyboard-layout";
 import { UiMode } from "#enums/ui-mode";
 import {
   detectKeyboardLayout,
@@ -25,6 +25,7 @@ import type {
   CustomPadConfig,
   Interaction,
   InterfaceConfig,
+  KeyboardConfig,
   MappingSettingName,
   SelectedDevice,
 } from "#types/inputs";
@@ -514,7 +515,7 @@ export class InputsController {
    * @returns InterfaceConfig The configuration object corresponding to the identified keyboard layout.
    */
   getConfigKeyboard(_id: string): InterfaceConfig {
-    return getKeyboardConfigForLayout(settings.keyboard.layout);
+    return getKeyboardConfigForLayout(this.getEffectiveKeyboardLayout());
   }
 
   /**
@@ -522,13 +523,70 @@ export class InputsController {
    * Bindings the user customized are kept.
    */
   async autoDetectKeyboardLayout(): Promise<void> {
-    if (settings.keyboard.layoutDetected) {
+    if (settings.keyboard.layout !== KeyboardLayout.AUTO || settings.keyboard.layoutDetected) {
       return;
     }
     const detected = await detectKeyboardLayout();
-    if (detected != null) {
+    if (detected != null && settings.keyboard.layout === KeyboardLayout.AUTO && !settings.keyboard.layoutDetected) {
       this.applyDetectedKeyboardLayout(detected);
     }
+  }
+
+  /**
+   * Select a keyboard layout preset or request automatic system detection.
+   */
+  setKeyboardLayout(layout: KeyboardLayout): void {
+    if (layout === KeyboardLayout.AUTO) {
+      settings.update("keyboard", "detectedLayout", this.getEffectiveKeyboardLayout());
+      settings.update("keyboard", "layout", KeyboardLayout.AUTO);
+      void this.redetectKeyboardLayout();
+      return;
+    }
+
+    const previous = this.getEffectiveKeyboardLayout();
+    settings.update("keyboard", "layout", layout);
+    settings.update("keyboard", "layoutDetected", true);
+    if (layout !== previous) {
+      this.applyKeyboardLayout(previous, layout);
+    }
+  }
+
+  /**
+   * Re-detect the system layout without changing the saved custom bindings.
+   */
+  async redetectKeyboardLayout(): Promise<void> {
+    if (settings.keyboard.layout !== KeyboardLayout.AUTO) {
+      return;
+    }
+    settings.update("keyboard", "layoutDetected", false);
+    await this.autoDetectKeyboardLayout();
+  }
+
+  private getEffectiveKeyboardLayout(): KeyboardLayoutPreset {
+    return settings.keyboard.layout === KeyboardLayout.AUTO
+      ? settings.keyboard.detectedLayout
+      : settings.keyboard.layout;
+  }
+
+  private applyDetectedKeyboardLayout(layout: KeyboardLayoutPreset): void {
+    if (settings.keyboard.layout !== KeyboardLayout.AUTO || settings.keyboard.layoutDetected) {
+      return;
+    }
+    const previous = this.getEffectiveKeyboardLayout();
+    settings.update("keyboard", "detectedLayout", layout);
+    settings.update("keyboard", "layoutDetected", true);
+    this.applyKeyboardLayout(previous, layout);
+  }
+
+  private applyKeyboardLayout(previous: KeyboardLayoutPreset, layout: KeyboardLayoutPreset): void {
+    const deviceName = this.selectedDevice[Device.KEYBOARD];
+    const savedCustom = this.configs[deviceName]?.custom as KeyboardConfig["custom"];
+    const config = getKeyboardConfigForLayout(layout);
+    config.custom = savedCustom ? mergeCustomBindings(previous, layout, savedCustom) : { ...config.default };
+    this.configs[deviceName] = config;
+    globalScene.gameData?.saveMappingConfigs(deviceName, config);
+    this.deactivatePressedKey();
+    (globalScene.ui?.handlers[UiMode.SETTINGS_KEYBOARD] as SettingsKeyboardUiHandler | undefined)?.updateBindings();
   }
 
   /**
@@ -543,29 +601,6 @@ export class InputsController {
     if (detected != null) {
       this.applyDetectedKeyboardLayout(detected);
     }
-  }
-
-  private applyDetectedKeyboardLayout(detected: KeyboardLayout): void {
-    if (settings.keyboard.layoutDetected) {
-      return;
-    }
-    settings.update("keyboard", "layoutDetected", true);
-
-    const previous = settings.keyboard.layout;
-    if (detected === previous) {
-      return;
-    }
-
-    const deviceName = this.selectedDevice[Device.KEYBOARD];
-    const savedCustom = this.configs[deviceName]?.custom;
-    settings.update("keyboard", "layout", detected);
-
-    const config = deepCopy(this.getConfigKeyboard(deviceName)) as InterfaceConfig;
-    config.custom = savedCustom ? mergeCustomBindings(previous, detected, savedCustom) : { ...config.default };
-    this.configs[deviceName] = config;
-    globalScene.gameData?.saveMappingConfigs(deviceName, config);
-    this.deactivatePressedKey();
-    (globalScene.ui?.handlers[UiMode.SETTINGS_KEYBOARD] as SettingsKeyboardUiHandler | undefined)?.updateBindings();
   }
 
   /**

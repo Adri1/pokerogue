@@ -1,13 +1,24 @@
+import type { KeyboardLayoutPreset } from "#enums/keyboard-layout";
 import { KeyboardLayout } from "#enums/keyboard-layout";
 import { CFG_KEYBOARD_QWERTY } from "#inputs/cfg-keyboard-qwerty";
 import type { KeyboardConfig } from "#types/inputs";
 import { deepCopy } from "#utils/data";
 
+interface KeyboardLayoutMapLike {
+  get(code: string): string | undefined;
+}
+
+interface NavigatorWithKeyboardLayoutMap extends Navigator {
+  keyboard?: {
+    getLayoutMap?: () => Promise<KeyboardLayoutMapLike>;
+  };
+}
+
 /**
  * Pairs of keys whose default bindings are exchanged, so that the default binds keep the same
  * physical position as on a QWERTY keyboard.
  */
-const LAYOUT_KEY_SWAPS: Record<KeyboardLayout, readonly (readonly [string, string])[]> = {
+const LAYOUT_KEY_SWAPS: Record<KeyboardLayoutPreset, readonly (readonly [string, string])[]> = {
   [KeyboardLayout.QWERTY]: [],
   [KeyboardLayout.AZERTY]: [
     ["KEY_A", "KEY_Q"],
@@ -22,7 +33,7 @@ const LAYOUT_KEY_SWAPS: Record<KeyboardLayout, readonly (readonly [string, strin
  * @param layout - The {@linkcode KeyboardLayout} preset
  * @returns A fresh copy of the keyboard config
  */
-export function getKeyboardConfigForLayout(layout: KeyboardLayout): KeyboardConfig {
+export function getKeyboardConfigForLayout(layout: KeyboardLayoutPreset): KeyboardConfig {
   const config = deepCopy(CFG_KEYBOARD_QWERTY) as KeyboardConfig;
   const defaults = config.default as Record<string, unknown>;
   for (const [a, b] of LAYOUT_KEY_SWAPS[layout] ?? []) {
@@ -36,9 +47,9 @@ export function getKeyboardConfigForLayout(layout: KeyboardLayout): KeyboardConf
  * @returns The detected {@linkcode KeyboardLayout}, or `null` if it couldn't be determined
  * (unsupported browser, or a layout that isn't one of the presets)
  */
-export async function detectKeyboardLayout(): Promise<KeyboardLayout | null> {
+export async function detectKeyboardLayout(): Promise<KeyboardLayoutPreset | null> {
   try {
-    const layoutMap = await (navigator as any).keyboard?.getLayoutMap?.();
+    const layoutMap = await (navigator as NavigatorWithKeyboardLayoutMap).keyboard?.getLayoutMap?.();
     if (!layoutMap) {
       return null;
     }
@@ -63,7 +74,7 @@ export async function detectKeyboardLayout(): Promise<KeyboardLayout | null> {
  * @param key - The produced character (`KeyboardEvent.key`)
  * @returns The detected layout, or `null` if the key isn't conclusive
  */
-export function detectKeyboardLayoutFromKey(code: string, key: string): KeyboardLayout | null {
+export function detectKeyboardLayoutFromKey(code: string, key: string): KeyboardLayoutPreset | null {
   const char = key.toLowerCase();
   switch (code) {
     case "KeyQ":
@@ -97,22 +108,22 @@ export function detectKeyboardLayoutFromKey(code: string, key: string): Keyboard
  * @returns The new bindings
  */
 export function mergeCustomBindings(
-  from: KeyboardLayout,
-  to: KeyboardLayout,
-  custom: Record<string, any>,
-): Record<string, any> {
-  const oldDefaults = getKeyboardConfigForLayout(from).default as Record<string, any>;
-  const result = { ...getKeyboardConfigForLayout(to).default } as Record<string, any>;
+  from: KeyboardLayoutPreset,
+  to: KeyboardLayoutPreset,
+  custom: NonNullable<KeyboardConfig["custom"]>,
+): NonNullable<KeyboardConfig["custom"]> {
+  const oldDefaults = getKeyboardConfigForLayout(from).default;
+  const result = { ...getKeyboardConfigForLayout(to).default };
 
-  const customKeys = Object.keys(custom).filter(key => custom[key] !== oldDefaults[key]);
-  const touchedSettings = new Set<any>();
+  const customKeys = (Object.keys(custom) as (keyof typeof custom)[]).filter(key => custom[key] !== oldDefaults[key]);
+  const touchedSettings = new Set<(typeof custom)[keyof typeof custom]>();
   for (const key of customKeys) {
     touchedSettings.add(custom[key]);
     touchedSettings.add(oldDefaults[key]);
   }
   touchedSettings.delete(-1);
 
-  for (const key of Object.keys(result)) {
+  for (const key of Object.keys(result) as (keyof typeof result)[]) {
     if (touchedSettings.has(result[key])) {
       result[key] = -1;
     }

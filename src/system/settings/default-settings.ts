@@ -87,7 +87,8 @@ const defaultGamepadSettings: GamepadSettings = {
 };
 
 const defaultKeyboardSettings: KeyboardSettings = {
-  layout: KeyboardLayout.QWERTY,
+  layout: KeyboardLayout.AUTO,
+  detectedLayout: KeyboardLayout.QWERTY,
   layoutDetected: false,
 };
 
