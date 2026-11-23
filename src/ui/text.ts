@@ -359,6 +359,12 @@ export function getTextStyleOptions(
       styleOptions.fontFamily = "pkmnems";
       break;
     }
+    case TextStyle.SHOP: {
+      styleOptions.padding = { top: 2, bottom: 16 };
+      styleOptions.fontSize = defaultFontSize - 48;
+      styleOptions.fontFamily = "emerald-city-shop";
+      break;
+    }
     case TextStyle.PARTY_CANCEL_BUTTON: {
       switch (lang) {
         case "ja":
@@ -594,6 +600,7 @@ export function getTextColor(textStyle: TextStyle, shadow?: boolean): string {
       }
       return shadow ? "#6b5a73" : "#f8f8f8";
     case TextStyle.PARTY:
+    case TextStyle.SHOP:
     case TextStyle.PARTY_CANCEL_BUTTON:
     case TextStyle.INSTRUCTIONS_TEXT:
     case TextStyle.MOVE_LABEL:

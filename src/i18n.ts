@@ -34,6 +34,9 @@ const rangesByLanguage = {
 };
 
 const fonts: LoadingFontFaceProperty[] = [
+  {
+    face: new FontFace("emerald-city-shop", `url(${getCachedUrl("./fonts/emerald-city-shop.ttf")})`),
+  },
   // unicode (special characters)
   {
     face: new FontFace("pkmnems", `url(${getCachedUrl("./fonts/pokemon-emerald-pro.ttf")})`, {
